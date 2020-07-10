@@ -19,6 +19,8 @@ app.use(bodyParser.json())
 
 
 
+app.use(express.static('/public'))
+
 app.use(session({
     name:SESS_NAME,
     resave:false,
@@ -26,19 +28,15 @@ app.use(session({
     secret: APP_SECRET,
     cookie:{
         maxAge:360000,
-        sameSite:true,
         secure: NODE_ENV === 'production'
     }
 }))
 
 
-
-
 app.use('/',webRoutes)
-app.use('/api/v1', apiRoutes)
 
-// Main Directory
-app.use(express.static(__dirname + 'public'))
+
+app.use('/api/v1', apiRoutes)
 
 mongo.connect(DB_CONNECTION, {useNewUrlParser:true,useUnifiedTopology:true}, ()=>{
     console.log('Connected to MongoDB Database');

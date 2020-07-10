@@ -33,6 +33,7 @@
     "mongoose": "^5.9.22",
     "popper.js": "^1.16.1",
     "sweetalert2": "^9.15.3",
+    "v-form": "^2.3.5",
     "vue": "^2.6.11",
     "vue-router": "^3.3.4",
     "vuex": "^3.5.1"

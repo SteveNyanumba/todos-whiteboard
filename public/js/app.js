@@ -10696,6 +10696,18 @@ return jQuery;
 
 /***/ }),
 
+/***/ "./node_modules/@babel/runtime/regenerator/index.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/@babel/runtime/regenerator/index.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! regenerator-runtime */ "./node_modules/regenerator-runtime/runtime.js");
+
+
+/***/ }),
+
 /***/ "./node_modules/@fortawesome/fontawesome-free/js/fontawesome.js":
 /*!**********************************************************************!*\
   !*** ./node_modules/@fortawesome/fontawesome-free/js/fontawesome.js ***!
@@ -17881,8 +17893,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -17919,9 +17929,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({});
 
 /***/ }),
@@ -17942,6 +17949,8 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+//
+//
 //
 //
 //
@@ -17989,17 +17998,31 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "AddTodo",
   data: function data() {
     return {
-      title: ''
+      title: '',
+      description: '',
+      completed: false,
+      priority: '',
+      dueDate: ''
     };
   },
   methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(['addTodo'])), {}, {
     newList: function newList() {
       this.addTodo(this.title);
+      this.addTodo(this.description);
+      this.addTodo(this.priority);
+      this.addTodo(this.dueDate);
     }
   })
 });
@@ -25261,6 +25284,746 @@ process.umask = function() { return 0; };
 
 /***/ }),
 
+/***/ "./node_modules/regenerator-runtime/runtime.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/regenerator-runtime/runtime.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * Copyright (c) 2014-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+var runtime = (function (exports) {
+  "use strict";
+
+  var Op = Object.prototype;
+  var hasOwn = Op.hasOwnProperty;
+  var undefined; // More compressible than void 0.
+  var $Symbol = typeof Symbol === "function" ? Symbol : {};
+  var iteratorSymbol = $Symbol.iterator || "@@iterator";
+  var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
+  var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
+
+  function wrap(innerFn, outerFn, self, tryLocsList) {
+    // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
+    var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
+    var generator = Object.create(protoGenerator.prototype);
+    var context = new Context(tryLocsList || []);
+
+    // The ._invoke method unifies the implementations of the .next,
+    // .throw, and .return methods.
+    generator._invoke = makeInvokeMethod(innerFn, self, context);
+
+    return generator;
+  }
+  exports.wrap = wrap;
+
+  // Try/catch helper to minimize deoptimizations. Returns a completion
+  // record like context.tryEntries[i].completion. This interface could
+  // have been (and was previously) designed to take a closure to be
+  // invoked without arguments, but in all the cases we care about we
+  // already have an existing method we want to call, so there's no need
+  // to create a new function object. We can even get away with assuming
+  // the method takes exactly one argument, since that happens to be true
+  // in every case, so we don't have to touch the arguments object. The
+  // only additional allocation required is the completion record, which
+  // has a stable shape and so hopefully should be cheap to allocate.
+  function tryCatch(fn, obj, arg) {
+    try {
+      return { type: "normal", arg: fn.call(obj, arg) };
+    } catch (err) {
+      return { type: "throw", arg: err };
+    }
+  }
+
+  var GenStateSuspendedStart = "suspendedStart";
+  var GenStateSuspendedYield = "suspendedYield";
+  var GenStateExecuting = "executing";
+  var GenStateCompleted = "completed";
+
+  // Returning this object from the innerFn has the same effect as
+  // breaking out of the dispatch switch statement.
+  var ContinueSentinel = {};
+
+  // Dummy constructor functions that we use as the .constructor and
+  // .constructor.prototype properties for functions that return Generator
+  // objects. For full spec compliance, you may wish to configure your
+  // minifier not to mangle the names of these two functions.
+  function Generator() {}
+  function GeneratorFunction() {}
+  function GeneratorFunctionPrototype() {}
+
+  // This is a polyfill for %IteratorPrototype% for environments that
+  // don't natively support it.
+  var IteratorPrototype = {};
+  IteratorPrototype[iteratorSymbol] = function () {
+    return this;
+  };
+
+  var getProto = Object.getPrototypeOf;
+  var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
+  if (NativeIteratorPrototype &&
+      NativeIteratorPrototype !== Op &&
+      hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
+    // This environment has a native %IteratorPrototype%; use it instead
+    // of the polyfill.
+    IteratorPrototype = NativeIteratorPrototype;
+  }
+
+  var Gp = GeneratorFunctionPrototype.prototype =
+    Generator.prototype = Object.create(IteratorPrototype);
+  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
+  GeneratorFunctionPrototype.constructor = GeneratorFunction;
+  GeneratorFunctionPrototype[toStringTagSymbol] =
+    GeneratorFunction.displayName = "GeneratorFunction";
+
+  // Helper for defining the .next, .throw, and .return methods of the
+  // Iterator interface in terms of a single ._invoke method.
+  function defineIteratorMethods(prototype) {
+    ["next", "throw", "return"].forEach(function(method) {
+      prototype[method] = function(arg) {
+        return this._invoke(method, arg);
+      };
+    });
+  }
+
+  exports.isGeneratorFunction = function(genFun) {
+    var ctor = typeof genFun === "function" && genFun.constructor;
+    return ctor
+      ? ctor === GeneratorFunction ||
+        // For the native GeneratorFunction constructor, the best we can
+        // do is to check its .name property.
+        (ctor.displayName || ctor.name) === "GeneratorFunction"
+      : false;
+  };
+
+  exports.mark = function(genFun) {
+    if (Object.setPrototypeOf) {
+      Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
+    } else {
+      genFun.__proto__ = GeneratorFunctionPrototype;
+      if (!(toStringTagSymbol in genFun)) {
+        genFun[toStringTagSymbol] = "GeneratorFunction";
+      }
+    }
+    genFun.prototype = Object.create(Gp);
+    return genFun;
+  };
+
+  // Within the body of any async function, `await x` is transformed to
+  // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
+  // `hasOwn.call(value, "__await")` to determine if the yielded value is
+  // meant to be awaited.
+  exports.awrap = function(arg) {
+    return { __await: arg };
+  };
+
+  function AsyncIterator(generator, PromiseImpl) {
+    function invoke(method, arg, resolve, reject) {
+      var record = tryCatch(generator[method], generator, arg);
+      if (record.type === "throw") {
+        reject(record.arg);
+      } else {
+        var result = record.arg;
+        var value = result.value;
+        if (value &&
+            typeof value === "object" &&
+            hasOwn.call(value, "__await")) {
+          return PromiseImpl.resolve(value.__await).then(function(value) {
+            invoke("next", value, resolve, reject);
+          }, function(err) {
+            invoke("throw", err, resolve, reject);
+          });
+        }
+
+        return PromiseImpl.resolve(value).then(function(unwrapped) {
+          // When a yielded Promise is resolved, its final value becomes
+          // the .value of the Promise<{value,done}> result for the
+          // current iteration.
+          result.value = unwrapped;
+          resolve(result);
+        }, function(error) {
+          // If a rejected Promise was yielded, throw the rejection back
+          // into the async generator function so it can be handled there.
+          return invoke("throw", error, resolve, reject);
+        });
+      }
+    }
+
+    var previousPromise;
+
+    function enqueue(method, arg) {
+      function callInvokeWithMethodAndArg() {
+        return new PromiseImpl(function(resolve, reject) {
+          invoke(method, arg, resolve, reject);
+        });
+      }
+
+      return previousPromise =
+        // If enqueue has been called before, then we want to wait until
+        // all previous Promises have been resolved before calling invoke,
+        // so that results are always delivered in the correct order. If
+        // enqueue has not been called before, then it is important to
+        // call invoke immediately, without waiting on a callback to fire,
+        // so that the async generator function has the opportunity to do
+        // any necessary setup in a predictable way. This predictability
+        // is why the Promise constructor synchronously invokes its
+        // executor callback, and why async functions synchronously
+        // execute code before the first await. Since we implement simple
+        // async functions in terms of async generators, it is especially
+        // important to get this right, even though it requires care.
+        previousPromise ? previousPromise.then(
+          callInvokeWithMethodAndArg,
+          // Avoid propagating failures to Promises returned by later
+          // invocations of the iterator.
+          callInvokeWithMethodAndArg
+        ) : callInvokeWithMethodAndArg();
+    }
+
+    // Define the unified helper method that is used to implement .next,
+    // .throw, and .return (see defineIteratorMethods).
+    this._invoke = enqueue;
+  }
+
+  defineIteratorMethods(AsyncIterator.prototype);
+  AsyncIterator.prototype[asyncIteratorSymbol] = function () {
+    return this;
+  };
+  exports.AsyncIterator = AsyncIterator;
+
+  // Note that simple async functions are implemented on top of
+  // AsyncIterator objects; they just return a Promise for the value of
+  // the final result produced by the iterator.
+  exports.async = function(innerFn, outerFn, self, tryLocsList, PromiseImpl) {
+    if (PromiseImpl === void 0) PromiseImpl = Promise;
+
+    var iter = new AsyncIterator(
+      wrap(innerFn, outerFn, self, tryLocsList),
+      PromiseImpl
+    );
+
+    return exports.isGeneratorFunction(outerFn)
+      ? iter // If outerFn is a generator, return the full iterator.
+      : iter.next().then(function(result) {
+          return result.done ? result.value : iter.next();
+        });
+  };
+
+  function makeInvokeMethod(innerFn, self, context) {
+    var state = GenStateSuspendedStart;
+
+    return function invoke(method, arg) {
+      if (state === GenStateExecuting) {
+        throw new Error("Generator is already running");
+      }
+
+      if (state === GenStateCompleted) {
+        if (method === "throw") {
+          throw arg;
+        }
+
+        // Be forgiving, per 25.3.3.3.3 of the spec:
+        // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
+        return doneResult();
+      }
+
+      context.method = method;
+      context.arg = arg;
+
+      while (true) {
+        var delegate = context.delegate;
+        if (delegate) {
+          var delegateResult = maybeInvokeDelegate(delegate, context);
+          if (delegateResult) {
+            if (delegateResult === ContinueSentinel) continue;
+            return delegateResult;
+          }
+        }
+
+        if (context.method === "next") {
+          // Setting context._sent for legacy support of Babel's
+          // function.sent implementation.
+          context.sent = context._sent = context.arg;
+
+        } else if (context.method === "throw") {
+          if (state === GenStateSuspendedStart) {
+            state = GenStateCompleted;
+            throw context.arg;
+          }
+
+          context.dispatchException(context.arg);
+
+        } else if (context.method === "return") {
+          context.abrupt("return", context.arg);
+        }
+
+        state = GenStateExecuting;
+
+        var record = tryCatch(innerFn, self, context);
+        if (record.type === "normal") {
+          // If an exception is thrown from innerFn, we leave state ===
+          // GenStateExecuting and loop back for another invocation.
+          state = context.done
+            ? GenStateCompleted
+            : GenStateSuspendedYield;
+
+          if (record.arg === ContinueSentinel) {
+            continue;
+          }
+
+          return {
+            value: record.arg,
+            done: context.done
+          };
+
+        } else if (record.type === "throw") {
+          state = GenStateCompleted;
+          // Dispatch the exception by looping back around to the
+          // context.dispatchException(context.arg) call above.
+          context.method = "throw";
+          context.arg = record.arg;
+        }
+      }
+    };
+  }
+
+  // Call delegate.iterator[context.method](context.arg) and handle the
+  // result, either by returning a { value, done } result from the
+  // delegate iterator, or by modifying context.method and context.arg,
+  // setting context.delegate to null, and returning the ContinueSentinel.
+  function maybeInvokeDelegate(delegate, context) {
+    var method = delegate.iterator[context.method];
+    if (method === undefined) {
+      // A .throw or .return when the delegate iterator has no .throw
+      // method always terminates the yield* loop.
+      context.delegate = null;
+
+      if (context.method === "throw") {
+        // Note: ["return"] must be used for ES3 parsing compatibility.
+        if (delegate.iterator["return"]) {
+          // If the delegate iterator has a return method, give it a
+          // chance to clean up.
+          context.method = "return";
+          context.arg = undefined;
+          maybeInvokeDelegate(delegate, context);
+
+          if (context.method === "throw") {
+            // If maybeInvokeDelegate(context) changed context.method from
+            // "return" to "throw", let that override the TypeError below.
+            return ContinueSentinel;
+          }
+        }
+
+        context.method = "throw";
+        context.arg = new TypeError(
+          "The iterator does not provide a 'throw' method");
+      }
+
+      return ContinueSentinel;
+    }
+
+    var record = tryCatch(method, delegate.iterator, context.arg);
+
+    if (record.type === "throw") {
+      context.method = "throw";
+      context.arg = record.arg;
+      context.delegate = null;
+      return ContinueSentinel;
+    }
+
+    var info = record.arg;
+
+    if (! info) {
+      context.method = "throw";
+      context.arg = new TypeError("iterator result is not an object");
+      context.delegate = null;
+      return ContinueSentinel;
+    }
+
+    if (info.done) {
+      // Assign the result of the finished delegate to the temporary
+      // variable specified by delegate.resultName (see delegateYield).
+      context[delegate.resultName] = info.value;
+
+      // Resume execution at the desired location (see delegateYield).
+      context.next = delegate.nextLoc;
+
+      // If context.method was "throw" but the delegate handled the
+      // exception, let the outer generator proceed normally. If
+      // context.method was "next", forget context.arg since it has been
+      // "consumed" by the delegate iterator. If context.method was
+      // "return", allow the original .return call to continue in the
+      // outer generator.
+      if (context.method !== "return") {
+        context.method = "next";
+        context.arg = undefined;
+      }
+
+    } else {
+      // Re-yield the result returned by the delegate method.
+      return info;
+    }
+
+    // The delegate iterator is finished, so forget it and continue with
+    // the outer generator.
+    context.delegate = null;
+    return ContinueSentinel;
+  }
+
+  // Define Generator.prototype.{next,throw,return} in terms of the
+  // unified ._invoke helper method.
+  defineIteratorMethods(Gp);
+
+  Gp[toStringTagSymbol] = "Generator";
+
+  // A Generator should always return itself as the iterator object when the
+  // @@iterator function is called on it. Some browsers' implementations of the
+  // iterator prototype chain incorrectly implement this, causing the Generator
+  // object to not be returned from this call. This ensures that doesn't happen.
+  // See https://github.com/facebook/regenerator/issues/274 for more details.
+  Gp[iteratorSymbol] = function() {
+    return this;
+  };
+
+  Gp.toString = function() {
+    return "[object Generator]";
+  };
+
+  function pushTryEntry(locs) {
+    var entry = { tryLoc: locs[0] };
+
+    if (1 in locs) {
+      entry.catchLoc = locs[1];
+    }
+
+    if (2 in locs) {
+      entry.finallyLoc = locs[2];
+      entry.afterLoc = locs[3];
+    }
+
+    this.tryEntries.push(entry);
+  }
+
+  function resetTryEntry(entry) {
+    var record = entry.completion || {};
+    record.type = "normal";
+    delete record.arg;
+    entry.completion = record;
+  }
+
+  function Context(tryLocsList) {
+    // The root entry object (effectively a try statement without a catch
+    // or a finally block) gives us a place to store values thrown from
+    // locations where there is no enclosing try statement.
+    this.tryEntries = [{ tryLoc: "root" }];
+    tryLocsList.forEach(pushTryEntry, this);
+    this.reset(true);
+  }
+
+  exports.keys = function(object) {
+    var keys = [];
+    for (var key in object) {
+      keys.push(key);
+    }
+    keys.reverse();
+
+    // Rather than returning an object with a next method, we keep
+    // things simple and return the next function itself.
+    return function next() {
+      while (keys.length) {
+        var key = keys.pop();
+        if (key in object) {
+          next.value = key;
+          next.done = false;
+          return next;
+        }
+      }
+
+      // To avoid creating an additional object, we just hang the .value
+      // and .done properties off the next function object itself. This
+      // also ensures that the minifier will not anonymize the function.
+      next.done = true;
+      return next;
+    };
+  };
+
+  function values(iterable) {
+    if (iterable) {
+      var iteratorMethod = iterable[iteratorSymbol];
+      if (iteratorMethod) {
+        return iteratorMethod.call(iterable);
+      }
+
+      if (typeof iterable.next === "function") {
+        return iterable;
+      }
+
+      if (!isNaN(iterable.length)) {
+        var i = -1, next = function next() {
+          while (++i < iterable.length) {
+            if (hasOwn.call(iterable, i)) {
+              next.value = iterable[i];
+              next.done = false;
+              return next;
+            }
+          }
+
+          next.value = undefined;
+          next.done = true;
+
+          return next;
+        };
+
+        return next.next = next;
+      }
+    }
+
+    // Return an iterator with no values.
+    return { next: doneResult };
+  }
+  exports.values = values;
+
+  function doneResult() {
+    return { value: undefined, done: true };
+  }
+
+  Context.prototype = {
+    constructor: Context,
+
+    reset: function(skipTempReset) {
+      this.prev = 0;
+      this.next = 0;
+      // Resetting context._sent for legacy support of Babel's
+      // function.sent implementation.
+      this.sent = this._sent = undefined;
+      this.done = false;
+      this.delegate = null;
+
+      this.method = "next";
+      this.arg = undefined;
+
+      this.tryEntries.forEach(resetTryEntry);
+
+      if (!skipTempReset) {
+        for (var name in this) {
+          // Not sure about the optimal order of these conditions:
+          if (name.charAt(0) === "t" &&
+              hasOwn.call(this, name) &&
+              !isNaN(+name.slice(1))) {
+            this[name] = undefined;
+          }
+        }
+      }
+    },
+
+    stop: function() {
+      this.done = true;
+
+      var rootEntry = this.tryEntries[0];
+      var rootRecord = rootEntry.completion;
+      if (rootRecord.type === "throw") {
+        throw rootRecord.arg;
+      }
+
+      return this.rval;
+    },
+
+    dispatchException: function(exception) {
+      if (this.done) {
+        throw exception;
+      }
+
+      var context = this;
+      function handle(loc, caught) {
+        record.type = "throw";
+        record.arg = exception;
+        context.next = loc;
+
+        if (caught) {
+          // If the dispatched exception was caught by a catch block,
+          // then let that catch block handle the exception normally.
+          context.method = "next";
+          context.arg = undefined;
+        }
+
+        return !! caught;
+      }
+
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        var record = entry.completion;
+
+        if (entry.tryLoc === "root") {
+          // Exception thrown outside of any try block that could handle
+          // it, so set the completion value of the entire function to
+          // throw the exception.
+          return handle("end");
+        }
+
+        if (entry.tryLoc <= this.prev) {
+          var hasCatch = hasOwn.call(entry, "catchLoc");
+          var hasFinally = hasOwn.call(entry, "finallyLoc");
+
+          if (hasCatch && hasFinally) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            } else if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else if (hasCatch) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            }
+
+          } else if (hasFinally) {
+            if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else {
+            throw new Error("try statement without catch or finally");
+          }
+        }
+      }
+    },
+
+    abrupt: function(type, arg) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc <= this.prev &&
+            hasOwn.call(entry, "finallyLoc") &&
+            this.prev < entry.finallyLoc) {
+          var finallyEntry = entry;
+          break;
+        }
+      }
+
+      if (finallyEntry &&
+          (type === "break" ||
+           type === "continue") &&
+          finallyEntry.tryLoc <= arg &&
+          arg <= finallyEntry.finallyLoc) {
+        // Ignore the finally entry if control is not jumping to a
+        // location outside the try/catch block.
+        finallyEntry = null;
+      }
+
+      var record = finallyEntry ? finallyEntry.completion : {};
+      record.type = type;
+      record.arg = arg;
+
+      if (finallyEntry) {
+        this.method = "next";
+        this.next = finallyEntry.finallyLoc;
+        return ContinueSentinel;
+      }
+
+      return this.complete(record);
+    },
+
+    complete: function(record, afterLoc) {
+      if (record.type === "throw") {
+        throw record.arg;
+      }
+
+      if (record.type === "break" ||
+          record.type === "continue") {
+        this.next = record.arg;
+      } else if (record.type === "return") {
+        this.rval = this.arg = record.arg;
+        this.method = "return";
+        this.next = "end";
+      } else if (record.type === "normal" && afterLoc) {
+        this.next = afterLoc;
+      }
+
+      return ContinueSentinel;
+    },
+
+    finish: function(finallyLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.finallyLoc === finallyLoc) {
+          this.complete(entry.completion, entry.afterLoc);
+          resetTryEntry(entry);
+          return ContinueSentinel;
+        }
+      }
+    },
+
+    "catch": function(tryLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc === tryLoc) {
+          var record = entry.completion;
+          if (record.type === "throw") {
+            var thrown = record.arg;
+            resetTryEntry(entry);
+          }
+          return thrown;
+        }
+      }
+
+      // The context.catch method must only be called with a location
+      // argument that corresponds to a known catch block.
+      throw new Error("illegal catch attempt");
+    },
+
+    delegateYield: function(iterable, resultName, nextLoc) {
+      this.delegate = {
+        iterator: values(iterable),
+        resultName: resultName,
+        nextLoc: nextLoc
+      };
+
+      if (this.method === "next") {
+        // Deliberately forget the last sent value so that we don't
+        // accidentally pass it on to the delegate.
+        this.arg = undefined;
+      }
+
+      return ContinueSentinel;
+    }
+  };
+
+  // Regardless of whether this script is executing as a CommonJS module
+  // or not, return the runtime object so that we can declare the variable
+  // regeneratorRuntime in the outer scope, which allows this module to be
+  // injected easily by `bin/regenerator --include-runtime script.js`.
+  return exports;
+
+}(
+  // If this script is executing as a CommonJS module, use module.exports
+  // as the regeneratorRuntime namespace. Otherwise create a new empty
+  // object. Either way, the resulting object will be used to initialize
+  // the regeneratorRuntime variable at the top of this file.
+   true ? module.exports : undefined
+));
+
+try {
+  regeneratorRuntime = runtime;
+} catch (accidentalStrictMode) {
+  // This module should not be running in strict mode, so the above
+  // assignment should always work unless something is misconfigured. Just
+  // in case runtime.js accidentally runs in strict mode, we can escape
+  // strict mode using a global Function call. This could conceivably fail
+  // if a Content Security Policy forbids using Function, but in that case
+  // the proper solution is to fix the accidental strict mode problem. If
+  // you've misconfigured your bundler to force strict mode and applied a
+  // CSP to forbid Function, and you're not willing to fix either of those
+  // problems, please detail your unique predicament in a GitHub issue.
+  Function("r", "regeneratorRuntime = r")(runtime);
+}
+
+
+/***/ }),
+
 /***/ "./node_modules/setimmediate/setImmediate.js":
 /*!***************************************************!*\
   !*** ./node_modules/setimmediate/setImmediate.js ***!
@@ -28724,6 +29487,1692 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 
 /***/ }),
 
+/***/ "./node_modules/v-form/js/form.js":
+/*!****************************************!*\
+  !*** ./node_modules/v-form/js/form.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+/*
+	Form
+	https://github.com/vinsproduction/form
+ */
+var Form,
+  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+if (!window.console) {
+  window.console = {};
+}
+
+if (!window.console.log) {
+  window.console.log = function() {};
+}
+
+if (!window.console.groupCollapsed) {
+  window.console.groupCollapsed = window.console.log;
+}
+
+if (!window.console.groupEnd) {
+  window.console.groupEnd = function() {};
+}
+
+Form = (function() {
+  function Form(params) {
+    var self;
+    this.params = params != null ? params : {};
+    this.logs = true;
+    this.formName = 'form';
+    this.formEl = false;
+    this.submitEl = false;
+    this.autoFields = true;
+    this.autoInit = true;
+    this.enter = true;
+    this.noSubmitEmpty = false;
+    this.disableSubmit = false;
+    this.fieldsOptions = {
+      active: true,
+      style: true,
+      autoErrors: true,
+      escape: true,
+      clearErrorsOnClick: true,
+      validateOnKeyup: false,
+      errorGroup: false,
+      fieldGroup: false,
+      attrs: {},
+      rules: {}
+    };
+    this.classes = {
+      input: {
+        placeholder: "placeholder"
+      },
+      checkbox: 'checkbox',
+      radio: 'radio',
+      select: {
+        select: 'select',
+        selected: 'selected',
+        options: 'options',
+        option: 'option',
+        open: 'open',
+        placeholder: 'default'
+      },
+      submit: {
+        disable: 'disabled'
+      },
+      errorField: "error-field",
+      error: "error",
+      preloader: "preloader",
+      validation: "valid-field"
+    };
+    this.templates = {
+      hidden: "<div style='position:absolute;width:0;height:0;overflow:hidden;'></div>",
+      checkbox: "<div></div>",
+      radio: "<div></div>",
+      select: {
+        select: "<div></div>",
+        selected: "<div><span>{selected}</span></div>",
+        options: "<div></div>",
+        option: "<div><span>{text}</span></div>"
+      },
+      error: "<div>{error}</div>"
+    };
+    this.fields = {};
+    this.data = {};
+    this.errors = {};
+    this.onFail = function(errors) {};
+    this.onSuccess = function(data) {};
+    this.onSubmit = function(data) {};
+    this.onReset = function() {};
+    this.onInit = function() {};
+    this.mobileBrowser = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    $.extend(true, this, this.params);
+    self = this;
+    $(function() {
+      if (!self.formEl && self.logs) {
+        console.warn("[Form: " + self.formName + "] formEl not set");
+      }
+      self.form = self.h.isObject(self.formEl) ? self.formEl : $(self.formEl);
+      if (!self.form.length && self.logs) {
+        console.warn("[Form: " + self.formName + "] formEl not found in DOM");
+        return;
+      }
+      self.form.attr('data-form', self.formName);
+      self.submitBtn = self.h.isObject(self.submitEl) ? self.submitEl : self.form.find(self.submitEl);
+      if (self.submitBtn.length) {
+        self.submitBtn.attr('data-submit', 'data-submit');
+      }
+      if (self.autoFields) {
+        self.form.find('[name]').each(function() {
+          var name;
+          name = $(this).attr('name');
+          if (self.params.fields && self.params.fields[name] === false) {
+            return delete self.fields[name];
+          } else {
+            return self.fields[name] = self.params.fields && self.params.fields[name] ? self.params.fields[name] : {};
+          }
+        });
+      }
+      if (self.autoInit) {
+        self.initForm();
+      }
+    });
+  }
+
+  Form.prototype.initForm = function() {
+    var opts, self;
+    self = this;
+    this.resetData();
+    this.clearErrors();
+    this.resetErrors();
+    this.form.find('[data-field]').off();
+    this.form.off();
+    this.submitBtn.off();
+    this.form.on('click', '[data-field]', function() {
+      var el, name, val;
+      el = $(this);
+      name = el.attr('data-name') || el.attr('name');
+      if (!self.fields[name]) {
+        return;
+      }
+      val = self.getVal(name);
+      if (self.fields[name].clearErrorsOnClick) {
+        self.deleteError(name);
+        self.errorField(name, false);
+      }
+      el.trigger('Click', {
+        name: name,
+        val: val,
+        errors: self.errors[name] || []
+      });
+      return true;
+    });
+    this.form.on('keyup', '[data-field]', function() {
+      var el, name, val;
+      el = $(this);
+      name = el.attr('data-name') || el.attr('name');
+      if (!self.fields[name]) {
+        return;
+      }
+      val = self.getVal(name);
+      if (self.fields[name].validateOnKeyup) {
+        self.validateField(name, 'keyup');
+      }
+      el.trigger('Keyup', {
+        name: name,
+        val: val,
+        errors: self.errors[name] || []
+      });
+      return true;
+    });
+    this.form.on('style', '[data-field]', function() {
+      var el, name;
+      el = $(this);
+      name = el.attr('name');
+      if (!self.fields[name]) {
+        return;
+      }
+      if (el.is("select")) {
+        self.createSelect(name);
+      } else if (el.attr('type') === 'radio') {
+        self.createRadio(name);
+      } else if (el.attr('type') === 'checkbox') {
+        self.createCheckbox(name);
+      }
+      if (self.fields[name].sel.length) {
+        el.trigger('Style', {
+          name: name,
+          sel: self.fields[name].sel
+        });
+      }
+      return true;
+    });
+    this.form.on('change', '[data-field]', function(e, data, withoutTrigger) {
+      var el, name, val;
+      el = $(this);
+      name = el.attr('name');
+      if (!self.fields[name]) {
+        return;
+      }
+      val = self.getVal(name);
+      self.validateField(name, 'change');
+      self.setData(name, val);
+      if (el.is("select")) {
+        self.createSelect(name, true);
+      } else if (el.attr('type') === 'radio') {
+        self.createRadio(name, true);
+      } else if (el.attr('type') === 'checkbox') {
+        self.createCheckbox(name, true);
+      }
+      if (!withoutTrigger) {
+        el.trigger('Change', {
+          name: name,
+          val: val,
+          errors: self.errors[name] || []
+        });
+      }
+      return true;
+    });
+    this.form.on('success', '[data-field]', function(e) {
+      var el, name, val;
+      el = $(this);
+      name = el.attr('name');
+      if (!self.fields[name]) {
+        return;
+      }
+      val = self.getVal(name);
+      el.trigger('Success', {
+        name: name,
+        val: val,
+        errorGroup: self.fields[name].errorGroup
+      });
+      return true;
+    });
+    this.form.on('error', '[data-field]', function(e, errors) {
+      var el, name, val;
+      el = $(this);
+      name = el.attr('name');
+      if (!self.fields[name]) {
+        return;
+      }
+      val = self.getVal(name);
+      el.trigger('Error', {
+        name: name,
+        val: val,
+        errorGroup: self.fields[name].errorGroup,
+        errors: errors || []
+      });
+      return true;
+    });
+    this.form.on('reset', '[data-field]', function() {
+      var el, name;
+      el = $(this);
+      name = el.attr('name');
+      if (!self.fields[name]) {
+        return;
+      }
+      el.trigger('Reset', {
+        name: name
+      });
+      return true;
+    });
+    this.form.submit(function(e) {
+      return e.preventDefault();
+    });
+    if (this.disableSubmit) {
+      this.submit(false);
+    } else {
+      this.submit(true);
+    }
+    this.form.mouseover(function() {
+      return self.form.inFocus = true;
+    });
+    this.form.mouseout(function() {
+      return self.form.inFocus = false;
+    });
+    if (this.enter) {
+      $(window).keydown(function(event) {
+        if (self.form.inFocus && event.keyCode === 13) {
+          return self.Submit();
+        }
+      });
+    }
+    this.submitBtn.click(function() {
+      self.Submit();
+      return false;
+    });
+    if (this.logs) {
+      opts = {
+        autoFields: this.autoFields,
+        fields: this.fields,
+        fieldsOptions: this.fieldsOptions,
+        enter: this.enter,
+        disableSubmit: this.disableSubmit,
+        classes: this.classes
+      };
+      console.groupCollapsed("[Form: " + this.formName + "] init");
+      console.log(opts);
+      console.groupEnd();
+    }
+    this.initValidation();
+    $.each(this.fields, function(name) {
+      return self.initField(name);
+    });
+    this.onInit();
+    $.each(this.fields, function(name) {
+      if (self.fields[name].style) {
+        return self.fields[name].el.eq(0).trigger('style');
+      }
+    });
+  };
+
+  Form.prototype.initField = function(name) {
+    var el, ref, self;
+    self = this;
+    el = this.form.find("[name='" + name + "']");
+    if (!el.length) {
+      console.log("[Form: " + this.formName + "] Warning! selector '" + name + "' not found");
+      return;
+    }
+    this.fields[name] = $.extend(true, {}, this.fieldsOptions, this.fields[name]);
+    this.fields[name].form = this;
+    this.fields[name].el = el;
+    this.fields[name].sel = $([]);
+    this.fields[name].el.attr('data-name', name);
+    this.fields[name].el.attr('data-field', 'original');
+    if (!this.fields[name].el.attr('type') && !this.fields[name].el.is('select') && !this.fields[name].el.is('textarea')) {
+      this.fields[name].el.attr('type', 'text');
+    }
+    if (this.fields[name].el.is('select')) {
+      this.fields[name].type = 'select';
+    } else if (this.fields[name].el.is('textarea')) {
+      this.fields[name].type = 'textarea';
+    } else {
+      this.fields[name].type = this.fields[name].el.attr('type');
+    }
+    this.fields[name].el.attr('data-type', this.fields[name].type);
+    this.fields[name].originalVal = self.getVal(name);
+    if (this.fields[name].type === 'select') {
+      this.fields[name].mobileKeyboard = true;
+    }
+    if ((ref = this.fields[name].type) === 'text' || ref === 'textarea' || ref === 'password') {
+      if (this.fields[name].placeholder) {
+        this.placeholder(name);
+      }
+    }
+    if (this.fields[name].rules.required) {
+      this.fields[name]._required = this.fields[name].rules.required;
+    }
+    $.each(this.fields[name].attrs, function(name, val) {
+      return el.attr(name, val);
+    });
+    this.fields[name].valid = true;
+    $.each(this.fields[name].rules, function(ruleName, rule) {
+      if (self.validation && !self.validation[ruleName]) {
+        return self.addFieldRule(name, ruleName, rule);
+      }
+    });
+    this.fields[name].val = function(val) {
+      if (val != null) {
+        self.setVal(name, val);
+        return this;
+      } else {
+        return self.getVal(name);
+      }
+    };
+    this.fields[name].activate = function(flag) {
+      if (flag == null) {
+        flag = true;
+      }
+      self.activate(name, flag);
+      return this;
+    };
+    this.fields[name].require = function(opt) {
+      if (opt == null) {
+        opt = {};
+      }
+      self.require(name, opt);
+      return this;
+    };
+    this.fields[name].stylize = function() {
+      self.fields[name].el.eq(0).trigger('style');
+      return this;
+    };
+    this.fields[name].reset = function() {
+      self.resetField(name);
+      return this;
+    };
+    this.fields[name].error = function(errors) {
+      if (errors == null) {
+        errors = false;
+      }
+      if (errors) {
+        self.setError(name, {
+          ruleName: 'unknown-rule',
+          reason: errors
+        });
+      } else {
+        self.deleteError(name);
+      }
+      self.errorField(name, errors);
+      return this;
+    };
+    this.fields[name].validate = function(ruleName, opt) {
+      var valid;
+      if (opt == null) {
+        opt = {};
+      }
+      if (!self.validation[ruleName]) {
+        return;
+      }
+      valid = self.validation[ruleName](self.getVal(name), opt);
+      return valid;
+    };
+    this.fields[name].addRule = function(ruleName, rule) {
+      self.addFieldRule(name, ruleName, rule);
+      return this;
+    };
+  };
+
+  Form.prototype.initValidation = function() {
+    var self;
+    self = this;
+    return self.validation = {
+      patterns: {
+        numeric: {
+          exp: '0-9',
+          type: ['цифра', 'цифры', 'цифр', 'цифры']
+        },
+        alpha: {
+          exp: 'а-яёА-ЯЁa-zA-Z',
+          type: ['буква', 'буквы', 'букв', 'буквы']
+        },
+        rus: {
+          exp: 'а-яёА-ЯЁ',
+          type: ['русская буква', 'русские буквы', 'русских букв', 'русские буквы']
+        },
+        rusLowercase: {
+          exp: 'а-яё',
+          type: ['русская маленькая буква', 'русские маленькой буквы', 'русских маленьких букв', 'русские маленькие буквы']
+        },
+        rusUppercase: {
+          exp: 'А-ЯЁ',
+          type: ['русская большая буква', 'русские большие буквы', 'русских больших букв', 'русские большие буквы']
+        },
+        eng: {
+          exp: 'a-zA-Z',
+          type: ['английская буква', 'английские буквы', 'английских букв', 'английские буквы']
+        },
+        engLowercase: {
+          exp: 'a-z',
+          type: ['английская маленькая буква', 'английские маленькие буквы', 'английских маленьких букв', 'английские маленькие буквы']
+        },
+        engUppercase: {
+          exp: 'A-Z',
+          type: ['английская большая буква', 'английские большие буквы', 'английских больших букв', 'английские большие буквы']
+        },
+        dot: {
+          exp: '.',
+          type: ['точка', 'точки', 'точек', 'точки']
+        },
+        hyphen: {
+          exp: '-',
+          type: ['дефис', 'дефиса', 'дефисов', 'дефисы']
+        },
+        dash: {
+          exp: '_',
+          type: ['подчеркивание', 'подчеркивания', 'подчеркиваний', 'подчеркивания']
+        },
+        space: {
+          exp: '\\s',
+          type: ['пробел', 'пробела', 'пробелов', 'пробелы']
+        },
+        slash: {
+          exp: '\\/',
+          type: ['слэш', 'слэша', 'слэшей', 'слэшы']
+        },
+        comma: {
+          exp: ',',
+          type: ['запятая', 'запятой', 'запятых', 'запятые']
+        },
+        special: {
+          exp: '$@$!%*#?&',
+          type: ['специальный символ', 'специальных символа', 'специальных символов', 'специальныe символы']
+        }
+      },
+      required: function(val, rule) {
+        var obj, valid;
+        obj = {
+          state: false,
+          reason: rule.reason || "Обязательное поле для заполнения"
+        };
+        valid = function() {
+          if (val !== false) {
+            if (rule.not) {
+              if (self.h.isArray(rule.not)) {
+                if ((val != null) && !self.h.isEmpty(val) && (indexOf.call(rule.not, val) < 0)) {
+                  obj.state = true;
+                }
+              } else {
+                if ((val != null) && !self.h.isEmpty(val) && (val !== rule.not)) {
+                  obj.state = true;
+                }
+              }
+            } else {
+              if ((val != null) && !self.h.isEmpty(val)) {
+                obj.state = true;
+              }
+            }
+          }
+          return obj;
+        };
+        return valid();
+      },
+      numeric: function(val, rule) {
+        var obj, valid;
+        obj = {
+          state: false,
+          reason: rule.reason || "Допустимы только цифры"
+        };
+        valid = function() {
+          if (/^[0-9]+$/.test(val)) {
+            obj.state = true;
+          }
+          return obj;
+        };
+        return valid();
+      },
+      alpha: function(val, rule) {
+        var obj, valid;
+        obj = {
+          state: false,
+          reason: rule.reason || "Допустимы только буквы"
+        };
+        valid = function() {
+          if (/^[a-zA-Zа-яёА-ЯЁ]+$/.test(val)) {
+            obj.state = true;
+          }
+          return obj;
+        };
+        return valid();
+      },
+      eng: function(val, rule) {
+        var obj, valid;
+        obj = {
+          state: false,
+          reason: rule.reason || "Допустимы только английские буквы"
+        };
+        valid = function() {
+          if (/^[a-zA-Z]+$/.test(val)) {
+            obj.state = true;
+          }
+          return obj;
+        };
+        return valid();
+      },
+      rus: function(val, rule) {
+        var obj, valid;
+        obj = {
+          state: false,
+          reason: rule.reason || "Допустимы только русские буквы"
+        };
+        valid = function() {
+          if (/^[а-яёА-ЯЁ]+$/.test(val)) {
+            obj.state = true;
+          }
+          return obj;
+        };
+        return valid();
+      },
+      max: function(val, rule) {
+        var count, obj, valid;
+        obj = {
+          state: false
+        };
+        count = rule.count || rule;
+        if (rule.reason) {
+          obj.reason = rule.reason.replace(/\{count\}/g, rule.count);
+        } else {
+          obj.reason = "Максимум " + count + " " + (self.h.declOfNum(count, ['символ', 'символа', 'символов']));
+        }
+        valid = function() {
+          if (val.length <= count) {
+            obj.state = true;
+          }
+          return obj;
+        };
+        return valid();
+      },
+      min: function(val, rule) {
+        var count, obj, valid;
+        obj = {
+          state: false
+        };
+        count = rule.count || rule;
+        if (rule.reason) {
+          obj.reason = rule.reason.replace(/\{count\}/g, rule.count);
+        } else {
+          obj.reason = "Минимум " + count + " " + (self.h.declOfNum(count, ['символ', 'символа', 'символов']));
+        }
+        valid = function() {
+          if (val.length >= count) {
+            obj.state = true;
+          }
+          return obj;
+        };
+        return valid();
+      },
+      email: function(val, rule) {
+        var obj, valid;
+        obj = {
+          state: false,
+          reason: rule.reason || 'Неправильно заполненный E-mail'
+        };
+        valid = function() {
+          if (/^[a-zA-Z0-9.!#$%&amp;'*+\-\/=?\^_`{|}~\-]+@[a-zA-Z0-9\-]+(?:\.[a-zA-Z0-9\-]+)*$/.test(val)) {
+            obj.state = true;
+          }
+          return obj;
+        };
+        return valid();
+      },
+      url: function(val, rule) {
+        var obj, valid;
+        obj = {
+          state: false,
+          reason: rule.reason || 'Неправильно заполненный url'
+        };
+        valid = function() {
+          if (/^((http|https):\/\/(\w+:{0,1}\w*@)?(\S+)|)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/.test(val)) {
+            obj.state = true;
+          }
+          return obj;
+        };
+        return valid();
+      },
+      not: function(val, rule) {
+        var obj, valid;
+        obj = {
+          state: false,
+          reason: rule.reason || "Недопустимое значение"
+        };
+        valid = function() {
+          if (rule.val != null) {
+            if (self.h.isArray(rule.val)) {
+              if (indexOf.call(rule.val, val) < 0) {
+                obj.state = true;
+              } else {
+                if (val !== rule.val) {
+                  obj.state = true;
+                }
+              }
+            }
+          } else {
+            if (self.h.isArray(rule)) {
+              if (indexOf.call(rule, val) < 0) {
+                obj.state = true;
+              }
+            } else {
+              if (val !== rule) {
+                obj.state = true;
+              }
+            }
+          }
+          return obj;
+        };
+        return valid();
+      },
+      compare: function(val, rule) {
+        var obj, valid;
+        obj = {
+          state: false,
+          reason: rule.reason || "Поля не совпадают"
+        };
+        valid = function() {
+          if (rule.field && self.fields[rule.field]) {
+            if (rule.reason) {
+              obj.reason = rule.reason.replace(/\{field\}/g, rule.field);
+            } else {
+              obj.reason = "Поле не совпадает с " + rule.field;
+            }
+            if (val === self.fields[rule.field].val()) {
+              obj.state = true;
+              return obj;
+            }
+          }
+          if (rule.val != null) {
+            if (self.h.isFunction(rule.val)) {
+              if (val === rule.val()) {
+                obj.state = true;
+              }
+            } else {
+              if (val === rule.val) {
+                obj.state = true;
+              }
+            }
+            return obj;
+          }
+          return obj;
+        };
+        return valid();
+      },
+      only: function(val, rule) {
+        var obj, patterns, valid;
+        patterns = this.patterns;
+        obj = {
+          state: true
+        };
+        if (rule.reason) {
+          obj.reason = rule.reason;
+        }
+        valid = function() {
+          var _patterns, _reasons, maxmin, pattern, range, reason;
+          _patterns = [];
+          _reasons = [];
+          $.each(rule.exp, function(k, v) {
+            if (patterns[k]) {
+              _reasons.push(patterns[k].type[3]);
+              return _patterns.push(patterns[k].exp);
+            }
+          });
+          reason = _reasons.join(', ');
+          pattern = _patterns.join('');
+          pattern = "^[" + pattern + "]+$";
+          if (!rule.reason) {
+            obj.reason = 'Допустимы только ' + reason;
+          }
+          if (!new RegExp(pattern).test(val)) {
+            obj.state = false;
+            return obj;
+          }
+          _reasons = [];
+          range = true;
+          $.each(rule.exp, function(k, v) {
+            if (k === 'range' && self.h.isArray(v)) {
+              if (v[0]) {
+                if (val.length < v[0]) {
+                  _reasons.push('минимум ' + v[0] + " " + self.h.declOfNum(v[0], ['символ', 'символа', 'символов']));
+                  range = false;
+                  return false;
+                }
+              }
+              if (v[1]) {
+                if (val.length > v[1]) {
+                  _reasons.push('максимум ' + v[1] + " " + self.h.declOfNum(v[1], ['символ', 'символа', 'символов']));
+                  range = false;
+                  return false;
+                }
+              }
+            }
+          });
+          if (!range) {
+            reason = _reasons.join(', ');
+            if (!rule.reason) {
+              obj.reason = 'Допустимы ' + reason;
+            }
+            obj.state = false;
+            return obj;
+          }
+          _reasons = [];
+          maxmin = true;
+          $.each(rule.exp, function(k, v) {
+            var match, reg;
+            if (patterns[k]) {
+              if (self.h.isArray(v)) {
+                reg = new RegExp("[" + patterns[k].exp + "]", 'g');
+                match = val.match(reg);
+                if (v[0]) {
+                  if (match && match.length < v[0]) {
+                    _reasons.push('Допустимы минимум ' + v[0] + " " + self.h.declOfNum(v[0], patterns[k].type));
+                    maxmin = false;
+                    return false;
+                  } else if (!match) {
+                    _reasons.push('Требуется минимум ' + v[0] + " " + self.h.declOfNum(v[0], patterns[k].type));
+                    maxmin = false;
+                    return false;
+                  }
+                }
+                if (v[1]) {
+                  if (match && match.length > v[1]) {
+                    _reasons.push('Допустимы максимум ' + v[1] + " " + self.h.declOfNum(v[1], patterns[k].type));
+                    maxmin = false;
+                    return false;
+                  }
+                }
+              }
+            }
+          });
+          if (!maxmin) {
+            reason = _reasons.join(', ');
+            if (!rule.reason) {
+              obj.reason = reason;
+            }
+            obj.state = false;
+            return obj;
+          }
+          return obj;
+        };
+        return valid();
+      },
+      strict: function(val, rule) {
+        var obj, patterns, valid;
+        patterns = this.patterns;
+        obj = {
+          state: true
+        };
+        if (rule.reason) {
+          obj.reason = rule.reason;
+        }
+        valid = function() {
+          var _patterns, _reasons, maxmin, pattern, range, reason;
+          _patterns = [];
+          _reasons = [];
+          $.each(rule.exp, function(k, v) {
+            if (patterns[k]) {
+              _reasons.push(patterns[k].type[3]);
+              return _patterns.push("(?=.*[" + patterns[k].exp + "])");
+            }
+          });
+          reason = _reasons.join(', ');
+          pattern = _patterns.join('');
+          if (!rule.reason) {
+            obj.reason = 'Требуется ' + reason;
+          }
+          if (!new RegExp(pattern).test(val)) {
+            obj.state = false;
+            return obj;
+          }
+          _reasons = [];
+          range = true;
+          $.each(rule.exp, function(k, v) {
+            if (k === 'range' && self.h.isArray(v)) {
+              if (v[0]) {
+                if (val.length < v[0]) {
+                  _reasons.push('минимум ' + v[0] + " " + self.h.declOfNum(v[0], ['символ', 'символа', 'символов']));
+                  range = false;
+                  return false;
+                }
+              }
+              if (v[1]) {
+                if (val.length > v[1]) {
+                  _reasons.push('максимум ' + v[1] + " " + self.h.declOfNum(v[1], ['символ', 'символа', 'символов']));
+                  range = false;
+                  return false;
+                }
+              }
+            }
+          });
+          if (!range) {
+            reason = _reasons.join(', ');
+            if (!rule.reason) {
+              obj.reason = 'Требуется ' + reason;
+            }
+            obj.state = false;
+            return obj;
+          }
+          _reasons = [];
+          maxmin = true;
+          $.each(rule.exp, function(k, v) {
+            var match, reg;
+            if (patterns[k]) {
+              if (self.h.isArray(v)) {
+                reg = new RegExp("[" + patterns[k].exp + "]", 'g');
+                match = val.match(reg);
+                if (v[0]) {
+                  if (match && match.length < v[0]) {
+                    _reasons.push('минимум ' + v[0] + " " + self.h.declOfNum(v[0], patterns[k].type));
+                    maxmin = false;
+                    return false;
+                  }
+                }
+                if (v[1]) {
+                  if (match && match.length > v[1]) {
+                    _reasons.push('максимум ' + v[1] + " " + self.h.declOfNum(v[1], patterns[k].type));
+                    maxmin = false;
+                    return false;
+                  }
+                }
+              }
+            }
+          });
+          if (!maxmin) {
+            reason = _reasons.join(', ');
+            if (!rule.reason) {
+              obj.reason = 'Требуется ' + reason;
+            }
+            obj.state = false;
+            return obj;
+          }
+          return obj;
+        };
+        return valid();
+      }
+    };
+  };
+
+  Form.prototype.init = function() {
+    var self;
+    self = this;
+    return $(function() {
+      return self.initForm();
+    });
+  };
+
+  Form.prototype.Submit = function() {
+    var list, self;
+    self = this;
+    if (self._disableSubmit) {
+      return;
+    }
+    this.resetData();
+    this.resetErrors();
+    list = {};
+    if (this.logs) {
+      console.groupCollapsed("[Form: " + this.formName + "] submit");
+    }
+    $.each(this.fields, function(name, opt) {
+      var ref, setGroup, val;
+      if (!opt.active) {
+        return;
+      }
+      val = self.getVal(name);
+      self.setData(name, val);
+      list[name] = val;
+      if (self.logs) {
+        console.log(name + ': ' + (val || '""'));
+      }
+      self.data[name] = opt.escape ? self.h.escapeText(val) : val;
+      if (self.noSubmitEmpty) {
+        if (opt.type === 'select') {
+          if (opt.rules.required.not) {
+            if (self.h.isArray(opt.rules.required.not)) {
+              if (indexOf.call(opt.rules.required.not, val) >= 0) {
+                self.deleteData(name);
+              }
+            } else {
+              if (val === opt.rules.required.not) {
+                self.deleteData(name);
+              }
+            }
+          }
+        }
+        if ((ref = opt.type) === 'text' || ref === 'password' || ref === 'textarea') {
+          if (self.h.isEmpty(val)) {
+            self.deleteData(name);
+          }
+        }
+      }
+      if (opt.fieldGroup) {
+        if (self.data.hasOwnProperty(name)) {
+          if (!self.data.groups) {
+            self.data.groups = {};
+          }
+          setGroup = function(path, name, val) {
+            var arr, newObj, obj;
+            arr = path.split('.');
+            newObj = {};
+            obj = newObj;
+            $.each(arr, function(k, v) {
+              newObj[v] = {};
+              newObj = newObj[v];
+              if (k === arr.length - 1) {
+                return newObj[name] = val;
+              }
+            });
+            return obj;
+          };
+          self.data.groups = $.extend(true, {}, self.data.groups, setGroup(opt.fieldGroup, name, self.data[name]));
+          return self.deleteData(name);
+        }
+      }
+    });
+    this.data = $.extend(true, {}, this.data, this.data.groups);
+    if (this.data['groups']) {
+      delete this.data['groups'];
+    }
+    if (this.logs) {
+      console.log(this.data);
+    }
+    if (this.logs) {
+      console.groupEnd();
+    }
+    $.each(this.fields, function(name, opt) {
+      if (opt.active) {
+        return self.validateField(name);
+      }
+    });
+    this.onSubmit(this.data, list);
+    if (this.h.isEmpty(this.errors)) {
+      this.Success(list);
+    } else {
+      this.Fail();
+    }
+  };
+
+  Form.prototype.Fail = function() {
+    var self;
+    self = this;
+    if (this.logs) {
+      console.groupCollapsed("[Form: " + this.formName + "] fail");
+    }
+    $.each(this.fields, function(name, opt) {
+      var errors;
+      errors = self.errors[name];
+      if (errors) {
+        if (self.logs) {
+          console.log(name + ': ' + errors[0].reason);
+        }
+        if (opt.errorGroup) {
+          if (self.errors.hasOwnProperty(name)) {
+            if (!self.errors[opt.errorGroup]) {
+              self.errors[opt.errorGroup] = {};
+            }
+            self.errors[opt.errorGroup][name] = errors;
+            return self.deleteError(name);
+          }
+        }
+      }
+    });
+    if (this.logs) {
+      console.log(this.errors);
+    }
+    if (this.logs) {
+      console.groupEnd();
+    }
+    this.onFail(this.errors);
+  };
+
+  Form.prototype.Success = function(list) {
+    if (this.logs) {
+      console.groupCollapsed("[Form: " + this.formName + "] success");
+    }
+    $.each(this.data, function(name, val) {
+      if (self.logs) {
+        return console.log(name + ': ' + (val || '""'));
+      }
+    });
+    if (this.logs) {
+      console.log(this.data);
+    }
+    if (this.logs) {
+      console.groupEnd();
+    }
+    this.onSuccess(this.data, list);
+  };
+
+  Form.prototype.createCheckbox = function(name, change) {
+    var $checkbox, $hiddenWrap, checkboxTemplate, self, val;
+    self = this;
+    checkboxTemplate = this.templates.checkbox;
+    if (change) {
+      if (this.fields[name].val()) {
+        this.fields[name].sel.attr('data-checked', 'data-checked');
+      } else {
+        this.fields[name].sel.removeAttr('data-checked');
+      }
+    } else {
+      if (this.form.find("[data-field='original'][data-type='checkbox'][data-name='" + name + "']").parent().attr('data-wrap')) {
+        this.form.find("[data-field='original'][data-type='checkbox'][data-name='" + name + "']").unwrap();
+      }
+      this.form.find("[data-field='styled'][data-type='checkbox'][data-name='" + name + "']").remove();
+      val = this.fields[name].el.attr('value');
+      $checkbox = $(checkboxTemplate);
+      $checkbox.addClass(this.classes.checkbox);
+      $checkbox.attr('data-field', 'styled');
+      $checkbox.attr('data-type', 'checkbox');
+      $checkbox.attr('data-name', name);
+      $checkbox.attr('data-value', val);
+      this.fields[name].el.after($checkbox);
+      this.fields[name].sel = $checkbox;
+      $hiddenWrap = $(this.templates.hidden);
+      $hiddenWrap.attr('data-wrap', name);
+      this.fields[name].el.wrap($hiddenWrap);
+      if (this.fields[name].el.prop("checked")) {
+        $checkbox.attr('data-checked', 'data-checked');
+      }
+      $checkbox.on('click', function() {
+        if (self.fields[name].el.prop("checked")) {
+          return self.setVal(name, false);
+        } else {
+          return self.setVal(name, val);
+        }
+      });
+    }
+  };
+
+  Form.prototype.createRadio = function(name, change) {
+    var self;
+    self = this;
+    if (change) {
+      this.fields[name].sel.removeAttr('data-checked');
+      this.fields[name].sel.filter("[data-value='" + (this.fields[name].val()) + "']").attr('data-checked', 'data-checked');
+    } else {
+      if (this.form.find("[data-field='original'][data-type='radio'][data-name='" + name + "']").parent().attr('data-wrap')) {
+        this.form.find("[data-field='original'][data-type='radio'][data-name='" + name + "']").unwrap();
+      }
+      this.form.find("[data-field='styled'][data-type='radio'][data-name='" + name + "']").remove();
+      this.fields[name].sel = $([]);
+      this.fields[name].el.each(function() {
+        var $hiddenWrap, $radio, el, val;
+        el = $(this);
+        val = el.attr('value');
+        $radio = $(self.templates.radio);
+        $radio.addClass(self.classes.radio);
+        $radio.attr('data-field', 'styled');
+        $radio.attr('data-type', 'radio');
+        $radio.attr('data-name', name);
+        $radio.attr('data-value', val);
+        if (el.attr('checked')) {
+          $radio.attr('data-checked', 'data-checked');
+        }
+        el.after($radio);
+        self.fields[name].sel = self.fields[name].sel.add($radio);
+        $hiddenWrap = $(self.templates.hidden);
+        $hiddenWrap.attr('data-wrap', name);
+        el.wrap($hiddenWrap);
+        return $radio.on('click', function() {
+          return self.setVal(name, val);
+        });
+      });
+    }
+  };
+
+  Form.prototype.createSelect = function(name, change) {
+    var $hiddenWrap, $options, $select, $selected, selectedTemplate, selectedText, self;
+    self = this;
+    if (change) {
+      this.fields[name].sel.removeClass(this.classes.select.open);
+      this.fields[name].sel.find("[data-selected]").html(this.fields[name].sel.find("[data-option][data-value='" + (this.fields[name].val()) + "']").html());
+      if (this.fields[name].placeholder && this.fields[name].placeholder === this.fields[name].el.val()) {
+        this.fields[name].sel.find("[data-selected]").addClass(self.classes.select.placeholder);
+      } else {
+        this.fields[name].sel.find("[data-selected]").removeClass(self.classes.select.placeholder);
+      }
+      this.fields[name].sel.find("[data-options]").hide();
+      this.fields[name].sel.find("[data-option]").removeAttr('data-checked');
+      this.fields[name].sel.find("[data-option][data-value='" + (this.fields[name].val()) + "']").attr('data-checked', 'data-checked');
+    } else {
+      if (this.form.find("[data-field='original'][data-type='select'][data-name='" + name + "']").parent().attr('data-wrap')) {
+        this.form.find("[data-field='original'][data-type='select'][data-name='" + name + "']").unwrap();
+      }
+      this.form.find("[data-field='styled'][data-type='select'][data-name='" + name + "']").remove();
+      $select = $(this.templates.select.select);
+      $select.addClass(this.classes.select.select);
+      $select.attr('data-field', 'styled');
+      $select.attr('data-type', 'select');
+      $select.attr('data-name', name);
+      if (this.fields[name].el.find('option[selected]').length) {
+        selectedText = this.fields[name].el.find('option:selected').text();
+      } else {
+        selectedText = this.fields[name].el.find('option:first-child').text();
+      }
+      selectedTemplate = this.templates.select.selected.replace('{selected}', selectedText);
+      $selected = $(selectedTemplate);
+      $selected.addClass(this.classes.select.selected);
+      $selected.attr('data-selected', 'data-selected');
+      $options = $(this.templates.select.options);
+      $options.addClass(this.classes.select.options);
+      $options.attr('data-options', 'data-options');
+      $options.hide();
+      $select.append($selected);
+      $select.append($options);
+      this.fields[name].el.after($select);
+      this.fields[name].sel = $select;
+      $hiddenWrap = $(self.templates.hidden);
+      $hiddenWrap.attr('data-wrap', name);
+      this.fields[name].el.wrap($hiddenWrap);
+      if (this.fields[name].mobileKeyboard && this.mobileBrowser) {
+        $select.on('click', function() {
+          return self.fields[name].el.focus();
+        });
+        this.fields[name].el.on('blur', function() {
+          return self.setVal(name, self.fields[name].el.val());
+        });
+      } else {
+        $selected.on('click', function() {
+          if ($select.hasClass(self.classes.select.open)) {
+            $select.removeClass(self.classes.select.open);
+            return $options.hide();
+          } else {
+            $select.addClass(self.classes.select.open);
+            return $options.show();
+          }
+        });
+      }
+      $(window).click(function(event) {
+        if (!$(event.target).closest($select).length && !$(event.target).is($select)) {
+          $select.removeClass(self.classes.select.open);
+          return $options.hide();
+        }
+      });
+      if (this.fields[name].placeholder && this.fields[name].placeholder === selectedText) {
+        $selected.addClass(self.classes.select.placeholder);
+      }
+      this.fields[name].el.find('option').each(function() {
+        var $option, option, text, val;
+        if (!$(this).attr('value') || self.h.isEmpty($(this).attr('value'))) {
+          $(this).attr('value', $(this).text());
+        }
+        val = $(this).attr('value');
+        text = $(this).text();
+        option = self.templates.select.option.replace('{text}', text);
+        $option = $(option);
+        $option.addClass(self.classes.select.option);
+        $option.attr('data-option', 'data-option');
+        $option.attr('data-value', val);
+        if ($(this).is(':first-child')) {
+          $option.attr('data-checked', 'data-checked');
+        }
+        $option.on('click', function() {
+          return self.setVal(name, $(this).attr('data-value'));
+        });
+        return $options.append($option);
+      });
+    }
+  };
+
+  Form.prototype.validateField = function(name, event) {
+    var ref, self, showErrors, val;
+    self = this;
+    if (!this.fields[name]) {
+      return;
+    }
+    this.deleteError(name);
+    this.errorField(name, false);
+    if (!this.fields[name].rules || this.h.isEmpty(this.fields[name].rules)) {
+      return;
+    }
+    val = self.getVal(name);
+    showErrors = true;
+    if (!self.fields[name].rules.required && self.h.isEmpty(val)) {
+      return;
+    }
+    if (event === 'keyup' || event === 'change') {
+      if ((ref = self.fields[name].type) === 'checkbox' || ref === 'radio') {
+        if (val === false) {
+          showErrors = false;
+        }
+      } else if (self.fields[name].type === 'select') {
+        if (self.fields[name].rules.required && self.fields[name].rules.required.not) {
+          if (self.h.isArray(self.fields[name].rules.required.not)) {
+            if (indexOf.call(self.fields[name].rules.required.not, val) >= 0) {
+              showErrors = false;
+            }
+          } else {
+            if (val === self.fields[name].rules.required.not) {
+              showErrors = false;
+            }
+          }
+        }
+      } else if (self.h.isEmpty(val)) {
+        showErrors = false;
+      }
+    }
+    return $.each(self.fields[name].rules, function(ruleName, rule) {
+      var valid;
+      if (rule && self.validation[ruleName]) {
+        valid = self.validation[ruleName](val, rule);
+        if (!valid.state) {
+          self.setError(name, {
+            ruleName: ruleName,
+            reason: valid.reason
+          });
+          if (showErrors) {
+            if (self.fields[name].autoErrors) {
+              if (self.fields[name].autoErrors === 'all') {
+                return self.errorField(name, self.errors[name]);
+              } else if (self.errors[name][0]) {
+                return self.errorField(name, self.errors[name][0]);
+              }
+            }
+          }
+        }
+      }
+    });
+  };
+
+  Form.prototype.setVal = function(name, val, withoutTrigger) {
+    var opt, ref;
+    if (withoutTrigger == null) {
+      withoutTrigger = false;
+    }
+    if (!this.fields[name]) {
+      return;
+    }
+    opt = this.fields[name];
+    if (opt.type === 'radio') {
+      opt.el.prop("checked", false);
+      opt.el.filter("[value='" + val + "']").prop("checked", val);
+    } else if (opt.type === 'checkbox') {
+      opt.el.prop("checked", val);
+    } else if ((ref = opt.type) === 'text' || ref === 'password' || ref === 'textarea') {
+      opt.el.val(this.h.trim(val));
+      if (opt.placeholder) {
+        opt.el.trigger('blur');
+      }
+    } else {
+      opt.el.val(val);
+    }
+    opt.el.eq(0).trigger('change', [
+      {
+        name: name,
+        val: val
+      }, withoutTrigger
+    ]);
+  };
+
+  Form.prototype.getVal = function(name) {
+    var opt, ref, ref1, val;
+    if (!this.fields[name]) {
+      return;
+    }
+    opt = this.fields[name];
+    if ((ref = opt.type) === 'checkbox' || ref === 'radio') {
+      val = opt.el.filter(":checked").val() || false;
+    } else if ((ref1 = opt.type) === 'text' || ref1 === 'password' || ref1 === 'textarea') {
+      val = opt.el.hasClass(this.classes.input.placeholder) ? "" : this.h.trim(opt.el.val());
+    } else {
+      val = opt.el.val();
+    }
+    return val;
+  };
+
+  Form.prototype.reset = function() {
+    var self;
+    self = this;
+    this.resetData();
+    this.resetErrors();
+    $.each(this.fields, function(name, opt) {
+      if (self.fields[name]["new"]) {
+        return self.removeField(name);
+      } else {
+        return self.fields[name].reset();
+      }
+    });
+    if (this.logs) {
+      console.log("[Form: " + this.formName + "] reset");
+    }
+    this.onReset();
+  };
+
+  Form.prototype.resetErrors = function() {
+    return this.errors = {};
+  };
+
+  Form.prototype.resetData = function() {
+    return this.data = {};
+  };
+
+  Form.prototype.setData = function(name, val) {
+    this.data[name] = val;
+  };
+
+  Form.prototype.deleteData = function(name) {
+    delete this.data[name];
+  };
+
+  Form.prototype.getData = function() {
+    return this.data;
+  };
+
+  Form.prototype.setError = function(name, opt) {
+    if (!this.errors[name]) {
+      this.errors[name] = [];
+    }
+    this.errors[name].push(opt);
+  };
+
+  Form.prototype.deleteError = function(name) {
+    delete this.errors[name];
+  };
+
+  Form.prototype.getErrors = function() {
+    return this.errors;
+  };
+
+  Form.prototype.clearErrors = function() {
+    var self;
+    self = this;
+    this.form.find('.' + this.classes.error).empty();
+    this.form.find('[data-field]').removeClass(this.classes.errorField);
+  };
+
+  Form.prototype.errorField = function(name, errors) {
+    var $error, error, errorsGroupsFields, self;
+    if (!this.fields[name]) {
+      return;
+    }
+    self = this;
+    if (errors) {
+      this.fields[name].valid = false;
+      this.fields[name].el.addClass(this.classes.errorField);
+      this.fields[name].sel.addClass(this.classes.errorField);
+      this.fields[name].el.removeClass(self.classes.validation);
+      this.fields[name].sel.removeClass(self.classes.validation);
+      if (this.fields[name].autoErrors) {
+        if (this.fields[name].errorGroup) {
+          $error = this.form.find('.' + this.classes.error + '-' + this.fields[name].errorGroup);
+        } else {
+          $error = this.form.find('.' + this.classes.error + '-' + name);
+        }
+        if (this.h.isArray(errors)) {
+          $error.empty();
+          $.each(errors, function(k, v) {
+            var error;
+            if (!self.h.isObject(v)) {
+              v = {
+                reason: v
+              };
+            }
+            error = self.templates.error.replace('{error}', v.reason);
+            return $error.append(error);
+          });
+        } else {
+          if (!self.h.isObject(errors)) {
+            errors = {
+              reason: errors
+            };
+          }
+          error = self.templates.error.replace('{error}', errors.reason);
+          $error.html(error);
+        }
+      }
+      this.fields[name].el.eq(0).trigger('error', [errors]);
+    } else {
+      this.fields[name].valid = true;
+      if (this.fields[name].errorGroup) {
+        errorsGroupsFields = false;
+        $.each(this.fields, function(fieldName) {
+          if (self.fields[fieldName].errorGroup === self.fields[name].errorGroup) {
+            if (!self.fields[fieldName].valid) {
+              errorsGroupsFields = true;
+            }
+          }
+        });
+        if (!errorsGroupsFields) {
+          if (this.fields[name].autoErrors) {
+            this.form.find('.' + this.classes.error + '-' + this.fields[name].errorGroup).empty();
+          }
+        }
+      } else {
+        if (this.fields[name].autoErrors) {
+          this.form.find('.' + this.classes.error + '-' + name).empty();
+        }
+      }
+      this.fields[name].el.removeClass(this.classes.errorField);
+      this.fields[name].sel.removeClass(this.classes.errorField);
+      this.fields[name].el.addClass(self.classes.validation);
+      this.fields[name].sel.addClass(self.classes.validation);
+      this.fields[name].el.eq(0).trigger('success');
+    }
+  };
+
+  Form.prototype.resetField = function(name) {
+    if (!this.fields[name]) {
+      return;
+    }
+    this.setVal(name, this.fields[name].originalVal, true);
+    this.errorField(name, false);
+    this.fields[name].el.eq(0).trigger('reset');
+  };
+
+  Form.prototype.addField = function(name, opt) {
+    this.fields[name] = opt;
+    this.initField(name, true);
+    this.fields[name]["new"] = true;
+    if (opt.onInit) {
+      opt.onInit();
+    }
+    if (this.logs) {
+      console.log("[Form: " + this.formName + "] add field", name);
+    }
+    if (this.fields[name].style) {
+      this.fields[name].el.trigger('style');
+    }
+  };
+
+  Form.prototype.removeField = function(name) {
+    if (!this.fields[name]) {
+      return;
+    }
+    this.fields[name].el.removeAttr('data-field');
+    if (this.fields[name].style) {
+      this.fields[name].el.unwrap();
+    }
+    if (this.fields[name].sel) {
+      this.fields[name].sel.remove();
+    }
+    if (this.logs) {
+      console.log("[Form: " + this.formName + "] delete field", name);
+    }
+    delete this.fields[name];
+  };
+
+  Form.prototype.require = function(name, opt) {
+    if (!this.fields[name]) {
+      return;
+    }
+    if (opt && this.fields[name]._required) {
+      this.fields[name].rules.required = this.fields[name]._required;
+    } else {
+      this.fields[name].rules.required = opt;
+    }
+  };
+
+  Form.prototype.newRule = function(name, rule) {
+    this.validation[name] = function(val) {
+      var obj, valid;
+      obj = {
+        state: false,
+        reason: rule.reason || 'unknown reason'
+      };
+      valid = function() {
+        if (rule.condition(val)) {
+          obj.state = true;
+        }
+        return obj;
+      };
+      return valid();
+    };
+  };
+
+  Form.prototype.addFieldRule = function(name, ruleName, rule) {
+    if (rule == null) {
+      rule = {};
+    }
+    if (!this.fields[name] || !ruleName) {
+      return;
+    }
+    if (!this.validation[ruleName] && rule.condition) {
+      this.newRule(ruleName, rule);
+    }
+    this.fields[name].rules[ruleName] = rule;
+    if (this.logs) {
+      console.log("[Form: " + this.formName + "] add rule '" + ruleName + "'");
+    }
+  };
+
+  Form.prototype.activate = function(name, flag) {
+    if (!this.fields[name]) {
+      return;
+    }
+    this.fields[name].active = flag;
+  };
+
+  Form.prototype.placeholder = function(name) {
+    var self;
+    if (!this.fields[name]) {
+      return;
+    }
+    self = this;
+    this.fields[name].el.focus(function() {
+      if ($(this).hasClass(self.classes.input.placeholder)) {
+        return $(this).val("").removeClass(self.classes.input.placeholder);
+      }
+    }).blur(function() {
+      if (self.h.isEmpty($(this).val())) {
+        return $(this).val(self.fields[name].placeholder).addClass(self.classes.input.placeholder);
+      } else {
+        return $(this).removeClass(self.classes.input.placeholder);
+      }
+    });
+    this.fields[name].el.blur();
+  };
+
+  Form.prototype.submit = function(flag) {
+    if (flag == null) {
+      flag = true;
+    }
+    if (flag) {
+      this._disableSubmit = false;
+      this.submitBtn.removeClass(this.classes.submit.disable);
+    } else {
+      this._disableSubmit = true;
+      this.submitBtn.addClass(this.classes.submit.disable);
+    }
+  };
+
+  Form.prototype.preloader = function(flag) {
+    var preloader;
+    if (flag == null) {
+      flag = true;
+    }
+    preloader = this.form.find('.' + this.classes.preloader);
+    if (flag) {
+      preloader.show();
+    } else {
+      preloader.hide();
+    }
+  };
+
+
+  /* Helpers */
+
+  Form.prototype.h = {
+    trim: function(text) {
+      if (text == null) {
+        text = "";
+      }
+      if (!this.isString(text)) {
+        return text;
+      }
+      return text.replace(/^\s+|\s+$/g, '');
+    },
+    stripHTML: function(text) {
+      if (text == null) {
+        text = "";
+      }
+      if (!this.isString(text)) {
+        return text;
+      }
+      return text.replace(/<(?:.|\s)*?>/g, '');
+    },
+    escapeText: function(text) {
+      if (text == null) {
+        text = "";
+      }
+      if (!this.isString(text)) {
+        return text;
+      }
+      return text.replace(/&(?!\w+;)/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    },
+    isFunction: function(obj) {
+      return Object.prototype.toString.call(obj) === '[object Function]';
+    },
+    isString: function(obj) {
+      return Object.prototype.toString.call(obj) === '[object String]';
+    },
+    isArray: function(obj) {
+      return Object.prototype.toString.call(obj) === '[object Array]';
+    },
+    isObject: function(obj) {
+      return Object.prototype.toString.call(obj) === '[object Object]';
+    },
+    isEmpty: function(o) {
+      var i;
+      if (this.isString(o)) {
+        if (this.trim(o) === "") {
+          return true;
+        } else {
+          return false;
+        }
+      }
+      if (this.isArray(o)) {
+        if (o.length === 0) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+      if (this.isObject(o)) {
+        for (i in o) {
+          if (o.hasOwnProperty(i)) {
+            return false;
+          }
+        }
+        return true;
+      }
+    },
+    declOfNum: function(number, titles) {
+      var cases;
+      cases = [2, 0, 1, 1, 1, 2];
+      return titles[(number % 100 > 4 && number % 100 < 20 ? 2 : cases[(number % 10 < 5 ? number % 10 : 5)])];
+    }
+
+    /*  Validation */
+  };
+
+  return Form;
+
+})();
+
+if ( true && typeof module.exports !== 'undefined') {
+  module.exports = Form;
+}
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/App.vue?vue&type=template&id=f348271a&":
 /*!*******************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/App.vue?vue&type=template&id=f348271a& ***!
@@ -28739,14 +31188,12 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { attrs: { id: "app" } }, [
-    _c(
-      "div",
-      { staticClass: "container" },
-      [_c("AddTodo"), _vm._v(" "), _c("todos")],
-      1
-    )
-  ])
+  return _c(
+    "div",
+    { attrs: { id: "main" } },
+    [_c("AddTodo"), _vm._v(" "), _c("todos")],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -28789,14 +31236,8 @@ var staticRenderFns = [
           _c("ul", { staticClass: "nav navbar-nav" }, [
             _c("li", { staticClass: "nav-item active" }, [
               _c("a", { staticClass: "nav-link", attrs: { href: "#" } }, [
-                _vm._v("Nav 1 "),
+                _vm._v("Login "),
                 _c("span", { staticClass: "sr-only" }, [_vm._v("(current)")])
-              ])
-            ]),
-            _vm._v(" "),
-            _c("li", { staticClass: "nav-item" }, [
-              _c("a", { staticClass: "nav-link", attrs: { href: "#" } }, [
-                _vm._v("Nav 2")
               ])
             ])
           ])
@@ -28833,41 +31274,46 @@ var render = function() {
       return _c("div", { key: todo.id, staticClass: "todo" }, [
         _c("h1", [_vm._v(_vm._s(todo.title))]),
         _vm._v(" "),
-        _c("p", [
-          _c(
-            "a",
-            {
-              attrs: { href: "#" },
-              on: {
-                click: function($event) {
-                  return _vm.markCompleted(todo.id)
-                }
-              }
-            },
-            [_vm._v("Mark as Complete")]
-          )
+        _c("p", { staticClass: "subheading" }, [
+          _vm._v(_vm._s(todo.description))
         ]),
         _vm._v(" "),
-        _c("p", [
-          _c(
-            "a",
-            {
-              attrs: { href: "#" },
-              on: {
-                click: function($event) {
-                  return _vm.deleteTodo(todo.id)
-                }
-              }
-            },
-            [_vm._v("delete")]
-          )
-        ])
+        _vm._m(0, true),
+        _vm._v(" "),
+        _vm._m(1, true),
+        _vm._v(" "),
+        _vm._m(2, true)
       ])
     }),
     0
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("button", { staticClass: "btn btn-danger" }, [
+      _c("i", { staticClass: "fab fa-trash fa-lg" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("button", { staticClass: "btn btn-danger" }, [
+      _c("i", { staticClass: "fab fa-pencil-ruler fa-lg" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("button", { staticClass: "btn btn-danger" }, [
+      _c("i", { staticClass: "fab fa-check-circle fa-lg" })
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -28919,6 +31365,85 @@ var render = function() {
                 return
               }
               _vm.title = $event.target.value
+            }
+          }
+        }),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.description,
+              expression: "description"
+            }
+          ],
+          attrs: { type: "text", name: "description", placeholder: "Title" },
+          domProps: { value: _vm.description },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.description = $event.target.value
+            }
+          }
+        }),
+        _vm._v(" "),
+        _c(
+          "select",
+          {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.priority,
+                expression: "priority"
+              }
+            ],
+            attrs: { type: "text", name: "priority", placeholder: "Title" },
+            on: {
+              change: function($event) {
+                var $$selectedVal = Array.prototype.filter
+                  .call($event.target.options, function(o) {
+                    return o.selected
+                  })
+                  .map(function(o) {
+                    var val = "_value" in o ? o._value : o.value
+                    return val
+                  })
+                _vm.priority = $event.target.multiple
+                  ? $$selectedVal
+                  : $$selectedVal[0]
+              }
+            }
+          },
+          [
+            _c("option", { attrs: { value: "high" } }, [_vm._v("High")]),
+            _vm._v(" "),
+            _c("option", { attrs: { value: "medium" } }, [_vm._v("medium")]),
+            _vm._v(" "),
+            _c("option", { attrs: { value: "low" } }, [_vm._v("low")])
+          ]
+        ),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.dueDate,
+              expression: "dueDate"
+            }
+          ],
+          attrs: { type: "date", name: "dueDate", placeholder: "Title" },
+          domProps: { value: _vm.dueDate },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.dueDate = $event.target.value
             }
           }
         }),
@@ -45441,6 +47966,13 @@ __webpack_require__(/*! @popperjs/core */ "./node_modules/@popperjs/core/lib/pop
 
 __webpack_require__(/*! @fortawesome/fontawesome-free */ "./node_modules/@fortawesome/fontawesome-free/js/fontawesome.js");
 
+var _require = __webpack_require__(/*! v-form */ "./node_modules/v-form/js/form.js"),
+    AlertError = _require.AlertError,
+    HasError = _require.HasError,
+    Form = _require.Form;
+
+var store = __webpack_require__(/*! ./store */ "./resources/js/store/index.js");
+
 
 window.$ = window.jquery = __webpack_require__(/*! jquery */ "../../node_modules/jquery/dist/jquery.js"); //Initializing the Vue instances
 
@@ -45476,9 +48008,13 @@ var Toast = Swal.mixin({
   }
 });
 window.Toast = Toast;
+var router = new vue_router__WEBPACK_IMPORTED_MODULE_0__["default"]({
+  routes: routes,
+  mode: 'history'
+});
 var app = new Vue({
   store: store,
-  routes: routes,
+  router: router,
   el: "#app"
 });
 
@@ -45752,6 +48288,187 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
 
 component.options.__file = "resources/js/components/login.vue"
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/store/index.js":
+/*!*************************************!*\
+  !*** ./resources/js/store/index.js ***!
+  \*************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _modules_todos__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/todos */ "./resources/js/store/modules/todos.js");
+
+
+
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
+/* harmony default export */ __webpack_exports__["default"] = (new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
+  modules: {
+    todos: _modules_todos__WEBPACK_IMPORTED_MODULE_2__["default"]
+  }
+}));
+
+/***/ }),
+
+/***/ "./resources/js/store/modules/todos.js":
+/*!*********************************************!*\
+  !*** ./resources/js/store/modules/todos.js ***!
+  \*********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+
+var state = {
+  todos: []
+};
+var getters = {
+  allTodos: function allTodos(state) {
+    return state.todos;
+  }
+};
+var actions = {
+  fetchTodos: function fetchTodos(_ref) {
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+      var commit, response;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              commit = _ref.commit;
+              _context.next = 3;
+              return axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('api/v1/todos');
+
+            case 3:
+              response = _context.sent;
+              commit('setTodos', response.data);
+              console.log(response.data);
+
+            case 6:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }))();
+  },
+  addTodo: function addTodo(_ref2, title) {
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+      var commit, response;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              commit = _ref2.commit;
+              _context2.next = 3;
+              return axios__WEBPACK_IMPORTED_MODULE_1___default.a.post('api/v1/todos', {
+                title: title,
+                description: description,
+                priority: priority,
+                dueDate: dueDate,
+                completed: false
+              });
+
+            case 3:
+              response = _context2.sent;
+              commit('newTodo', response.data);
+
+            case 5:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2);
+    }))();
+  },
+  deleteTodo: function deleteTodo(_ref3, id) {
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+      var commit;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              commit = _ref3.commit;
+              _context3.next = 3;
+              return axios__WEBPACK_IMPORTED_MODULE_1___default.a["delete"]("api/v1/todos/delete/".concat(id));
+
+            case 3:
+              commit('removeTodo', id);
+
+            case 4:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3);
+    }))();
+  },
+  markCompleted: function markCompleted(_ref4, id) {
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
+      var commit;
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              commit = _ref4.commit;
+              _context4.next = 3;
+              return axios__WEBPACK_IMPORTED_MODULE_1___default.a.post("https://jsonplaceholder.typicode.com/todos/".concat(id), {
+                completed: true
+              });
+
+            case 3:
+              commit('completeTask', id);
+
+            case 4:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4);
+    }))();
+  }
+};
+var mutations = {
+  setTodos: function setTodos(state, todos) {
+    state.todos = todos;
+  },
+  newTodo: function newTodo(state, todo) {
+    state.todos.unshift(todo);
+  },
+  removeTodo: function removeTodo(state, id) {
+    state.todos = state.todos.filter(function (todo) {
+      return todo.id !== id;
+    });
+  },
+  completeTask: function completeTask(state, id) {
+    if (state.todo.id === id) {
+      state.todos.completed = true;
+    }
+  }
+};
+/* harmony default export */ __webpack_exports__["default"] = ({
+  state: state,
+  getters: getters,
+  actions: actions,
+  mutations: mutations
+});
 
 /***/ }),
 

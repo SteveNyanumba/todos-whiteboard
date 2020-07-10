@@ -3,6 +3,8 @@ require('bootstrap')
 require('popper.js')
 require('@popperjs/core')
 require('@fortawesome/fontawesome-free')
+const{AlertError, HasError,Form} = require('v-form')
+const store = require('./store')
 
 import VueRouter from 'vue-router'
 
@@ -55,9 +57,14 @@ const Toast = Swal.mixin({
 })
 window.Toast = Toast
 
+const router = new VueRouter({
+    routes,
+    mode: 'history'
+})
+
 const app = new Vue({
     store,
-    routes,
+    router,
     el:"#app"
     
 })
